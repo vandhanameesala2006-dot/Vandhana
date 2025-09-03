@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6G Network Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.3);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        .pulse-effect {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        /* Custom progress bar styles */
+        .progress-bar-container {
+            position: relative;
+            width: 100%;
+            height: 12px;
+            background-color: #3f3f46; /* zinc-700 */
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); /* indigo-500 to purple-500 */
+        }
+        .text-neon-cyan {
+            color: #06b6d4; /* Tailwind cyan-500 */
+        }
+        .bg-neon-cyan {
+            background-color: #06b6d4;
+        }
+        .border-neon-cyan {
+            border-color: #06b6d4;
+        }
+        
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 p-6 flex items-center justify-center min-h-screen">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-500 to-cyan-400">
+                6G Network Dashboard
+            </h1>
+            <p class="mt-2 text-gray-400 text-lg">Real-time status and analytics for the next generation of connectivity.</p>
+        </header>
+
+        <!-- Main Status & Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Connection Status Card -->
+            <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
+                <div class="flex items-center mb-4">
+                    <div class="relative">
+                        <span class="absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75 pulse-effect"></span>
+                        <div id="status-indicator" class="relative inline-flex h-4 w-4 rounded-full bg-green-500"></div>
+                    </div>
+                    <h2 class="ml-3 text-lg font-semibold text-gray-200">Connection Status</h2>
+                </div>
+                <div class="text-2xl font-bold" id="status-text">Connected</div>
+                <p class="text-sm text-gray-500 mt-1" id="network-id">Network ID: 4C-6G-ALPHA-230</p>
+            </div>
+
+            <!-- Download Speed Card -->
+            <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
+                <div class="flex items-center mb-4">
+                    <svg class="h-6 w-6 text-neon-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <h2 class="ml-3 text-lg font-semibold text-gray-200">Download Speed</h2>
+                </div>
+                <div class="text-3xl font-bold" id="download-speed">32.8 Gbps</div>
+                <p class="text-sm text-gray-500 mt-1">Average: 30.5 Gbps</p>
+            </div>
+
+            <!-- Upload Speed Card -->
+            <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
+                <div class="flex items-center mb-4">
+                    <svg class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    <h2 class="ml-3 text-lg font-semibold text-gray-200">Upload Speed</h2>
+                </div>
+                <div class="text-3xl font-bold" id="upload-speed">21.5 Gbps</div>
+                <p class="text-sm text-gray-500 mt-1">Average: 19.1 Gbps</p>
+            </div>
+        </div>
+
+        <!-- Data Usage & Latency Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Data Usage Card -->
+            <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-200 mb-4">Daily Data Usage</h2>
+                <div class="flex items-end justify-between mb-2">
+                    <span class="text-3xl font-bold" id="data-used">124.5 GB</span>
+                    <span class="text-sm text-gray-400">out of 500 GB</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="usage-progress" style="width: 25%;"></div>
+                </div>
+            </div>
+            
+            <!-- Latency Card -->
+            <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-200 mb-4">Network Latency</h2>
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-3xl font-bold" id="latency-ms">2 ms</div>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <div class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></div>
+                        <span id="latency-status">Excellent</span>
+                    </div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="latency-progress" style="width: 2%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Devices Section -->
+        <div class="mt-8 bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-200 mb-4">Connected Devices</h2>
+            <div id="device-list" class="space-y-4">
+                <!-- Device items will be populated by JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            const downloadSpeedEl = document.getElementById('download-speed');
+            const uploadSpeedEl = document.getElementById('upload-speed');
+            const dataUsedEl = document.getElementById('data-used');
+            const usageProgressEl = document.getElementById('usage-progress');
+            const latencyMsEl = document.getElementById('latency-ms');
+            const latencyProgressEl = document.getElementById('latency-progress');
+            const latencyStatusEl = document.getElementById('latency-status');
+            const deviceListEl = document.getElementById('device-list');
+            
+            const totalDataLimit = 500; // GB
+            const devices = [
+                { id: 'D-A1B2C3D4', name: 'User’s Phone', status: 'Active', usage: '5.2 GB' },
+                { id: 'D-E5F6G7H8', name: 'Smart Home Hub', status: 'Idle', usage: '1.8 GB' },
+                { id: 'D-I9J0K1L2', name: 'VR Headset', status: 'Active', usage: '15.6 GB' },
+                { id: 'D-M3N4O5P6', name: 'Smart TV', status: 'Streaming', usage: '28.1 GB' }
+            ];
+
+            // Function to update the dashboard metrics
+            function updateMetrics() {
+                // Simulate fluctuating speeds
+                const newDownloadSpeed = (Math.random() * 5 + 28).toFixed(1); // 28-33 Gbps
+                const newUploadSpeed = (Math.random() * 4 + 18).toFixed(1);   // 18-22 Gbps
+                
+                downloadSpeedEl.textContent = `${newDownloadSpeed} Gbps`;
+                uploadSpeedEl.textContent = `${newUploadSpeed} Gbps`;
+                
+                // Simulate cumulative data usage
+                const currentDataUsed = parseFloat(dataUsedEl.textContent.split(' ')[0]);
+                const newDataUsed = (currentDataUsed + (Math.random() * 1.5 + 0.5)).toFixed(1); // Add 0.5-2 GB
+                dataUsedEl.textContent = `${newDataUsed} GB`;
+                
+                const usagePercentage = (newDataUsed / totalDataLimit) * 100;
+                usageProgressEl.style.width = `${usagePercentage}%`;
+                
+                // Simulate latency
+                const newLatency = (Math.random() * 1.5 + 1).toFixed(0); // 1-2 ms
+                latencyMsEl.textContent = `${newLatency} ms`;
+                latencyProgressEl.style.width = `${Math.min(100, (10 - newLatency) * 10)}%`; // Progress inversely proportional to latency
+                
+                if (newLatency <= 2) {
+                    latencyStatusEl.textContent = 'Excellent';
+                    latencyStatusEl.classList.remove('text-orange-400', 'text-red-400');
+                    latencyStatusEl.classList.add('text-green-400');
+                } else if (newLatency > 2 && newLatency <= 5) {
+                    latencyStatusEl.textContent = 'Good';
+                    latencyStatusEl.classList.remove('text-green-400', 'text-red-400');
+                    latencyStatusEl.classList.add('text-orange-400');
+                } else {
+                    latencyStatusEl.textContent = 'Poor';
+                    latencyStatusEl.classList.remove('text-green-400', 'text-orange-400');
+                    latencyStatusEl.classList.add('text-red-400');
+                }
+            }
+
+            // Function to render device list
+            function renderDevices() {
+                deviceListEl.innerHTML = ''; // Clear existing list
+                devices.forEach(device => {
+                    const deviceCard = document.createElement('div');
+                    deviceCard.className = 'bg-gray-900 p-4 rounded-xl flex items-center justify-between border border-gray-700';
+                    
+                    const statusColor = device.status === 'Active' || device.status === 'Streaming' ? 'bg-green-500' : 'bg-yellow-500';
+                    
+                    deviceCard.innerHTML = `
+                        <div class="flex items-center">
+                            <span class="inline-block w-2 h-2 rounded-full mr-3 ${statusColor}"></span>
+                            <div>
+                                <h3 class="font-semibold text-gray-200">${device.name}</h3>
+                                <p class="text-sm text-gray-500">${device.id}</p>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-400">${device.usage} today</div>
+                    `;
+                    deviceListEl.appendChild(deviceCard);
+                });
+            }
+
+            // Initial render and then update every 2 seconds
+            updateMetrics();
+            renderDevices();
+            setInterval(updateMetrics, 2000); // Update metrics every 2 seconds
+        });
+    </script>
+</body>
+</html>
